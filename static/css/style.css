@@ -1,0 +1,24 @@
+.form-control{
+    width: fit-content;
+}
+.container {
+    width: 1650px !important;
+    height: 750px !important;
+}
+.detailBody {
+    width: 1650px !important;
+    height: 750px !important;
+}
+.pic {
+    width: 400px;
+    height: 400px;
+}
+
+.Regbody{
+    margin: 50px;
+}
+
+.stdCol{
+    width="100px" !important;
+}
+

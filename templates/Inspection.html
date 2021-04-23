@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Zone Inspection</title>
+    <link href="{{url_for('static', filename = 'css/bootstrap.min.css')}}" rel="stylesheet">
+    <link rel="shortcut icon" href="{{url_for('static', filename = 'ToyotaLogo.png' )}}">
+    <link href="{{url_for('static', filename = 'css/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename = 'css/style.css')}}" rel="stylesheet">
+    <script type="text/javascript" src="{{url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename = 'js/bootstrap.min.js')}}"></script>
+
+    <!--	<script src="https://code.jquery.com/jquery-3.3.1.js"></script>-->
+    <!--    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">-->
+    <!--    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>-->
+
+    <script type="text/javascript" src="{{url_for('static', filename = 'js/jquery-3.3.1.js')}}"></script>
+    <link href="{{url_for('static', filename = 'css/jquery.dataTables.min.css')}}" rel="stylesheet">
+    <script type="text/javascript" src="{{url_for('static', filename = 'js/jquery.dataTables.min.js')}}"></script>
+    <script type="text/javascript">
+
+<!--            var u = location.href;-->
+<!--            var array = u.split('/');-->
+<!--            var plant = localStorage.getItem("plant");-->
+            var plant = (localStorage.getItem("plant") === undefined) ? "1" : localStorage.getItem("plant");
+            var terminal = (localStorage.getItem("terminal") === undefined) ? "AB_KEY" : localStorage.getItem("terminal");
+
+            var staticURL = "http://tmmk-wicsp03/icsQueryService/api/query/results/?format=JSON&QUERY_NAME=LATESTINSP_BYTERMINAL&SERVICE_KEY=134XR8NZCALF9JJBCXITO0&PLANT_NUM="+plant+"&TERMINAL="+terminal
+
+            var myVar = setInterval(refresh, 5000);
+            var URL_vehID;
+
+
+            $(document).ready(function () {
+<!--                    console.log("lastVehIDBefore = " + localStorage.getItem("VehID"));-->
+<!--                    console.log("URLVehID = " +URL_vehID);-->
+<!--                    console.log(new Date().toLocaleTimeString());-->
+
+
+            });
+
+
+
+            function refresh() {
+                $.getJSON(staticURL, function (data) {
+                    var vehID = data.ICS_DATA[0].DATA.VEHICLE_ID;
+                    var lastVehID = localStorage.getItem("VehID");
+
+                    var u = location.href;
+                    var array = u.split('/');
+<!--                    URL_vehID = array[array.length-1];-->
+                    URL_vehID = array[4];
+                    if (URL_vehID != vehID |URL_vehID === "999") getData(vehID);
+
+                    localStorage.setItem("VehID", URL_vehID);
+<!--                    console.log("currentVehID = " + URL_vehID);-->
+<!--                    console.log("lastVehID = " + localStorage.getItem("VehID"));-->
+                    console.log(new Date().toLocaleTimeString());
+                    console.log("currentVehID = " + plant);
+
+                });
+            };
+
+
+                function getData(vehID) {
+                    console.log("getData vehID = ", vehID);
+                    window.location.replace("http://127.0.0.1:5000/ZoneInsp/" + vehID);
+<!--                    window.location.replace("http://v01cis06t-new:8083/ZoneInsp/" + vehID);-->
+
+                }
+                function getData1() {
+<!--                    var vehID = 2003428;-->
+<!--                    console.log("getData1 vehID = ", vehID);-->
+                    window.location.replace("http://127.0.0.1:5000/ZoneInsp/" + vehID);
+                }
+<!--
+2003426
+2003428
+-->
+
+<!--            window.onload=setUpFieldEvents;-->
+
+            function setUpFieldEvents() {
+<!--              alert ("called");-->
+<!--            localStorage.setItem("VehID", 999);-->
+                var url = location.href;
+                var array = url.split('/');
+                var URL_vehID = array[array.length-1];
+                if (URL_vehID = 999) getData1();
+              }
+
+
+    </script>
+</head>
+<body class="Regbody">
+
+<h1 class="dc-element-item">Zone Inspection</h1>
+<header class="d-flex justify-content-center py-3">
+    <ul class="nav nav-pills">
+        <li class="nav-item"><a class="btn btn-primary" href="/ZoneConfig" target="_blank" class="nav-link active">Configuration</a>
+        </li>
+        <li class="nav-item"><a class="btn btn-primary" href="/Pictures" target="_blank" class="nav-link">Pictures</a>
+        </li>
+
+
+    </ul>
+</header>
+
+<!--<div class="row">-->
+<!--        <div class="col-md-10">-->
+<!--            -->
+<!--        </div>-->
+<!--     <div class="col-md-2">-->
+<!--            <a class="btn btn-primary" href="/ZoneConfig" target="_blank">Configuration</a>-->
+<!--            <a class="btn btn-primary" href="/Pictures" target="_blank">Pictures</a>-->
+<!--        </div>-->
+<!--    </div>-->
+<div class="container-fluid detailBody">
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Curr Vehicle</h2>
+        </div>
+
+    </div>
+    {% for row in insps %}
+    {% for picrow in pics %}
+    <div class="row">
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-md-4">
+                    <h3 id="CurrSeq">Seq: {{row.0}}</h3>
+                    <img class="pic" src={{picrow.3}}/>
+                </div>
+                <div class="col-md-4">
+                    <h3 id="CurrBody">Body: {{row.1}}</h3>
+                    <img class="pic" src={{picrow.4}}/>
+                </div>
+                <div class="col-md-4">
+                    <h3 id="CurrZone">Zone: {{row.2}}</h3>
+                    <img class="pic" src={{picrow.5}}/>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <h2>Next Vehicle</h2>
+            <br/>
+            <h3 id="NextSeq">Seq: {{row.3}}</h3>
+            <br/>
+            <h3 id="NextBody">Body: {{row.4}}</h3>
+            <br/>
+            <h3 id="NextZone">Zone: {{row.5}}</h3>
+        </div>
+    </div>
+    {% endfor %}
+    {% endfor %}
+</div>
+
+</body>
+</html>
